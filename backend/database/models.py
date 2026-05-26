@@ -25,6 +25,7 @@ class Book (Model):
     description = TextField()
     total_stock = IntegerField()
     available_stock = IntegerField()
+    is_active = BooleanField(default=True)
 
     class Meta:
         database = database

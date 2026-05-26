@@ -3,12 +3,12 @@ from models import database as connection
 
 migrator = MySQLMigrator(connection)
 
-active_loans = IntegerField(null=True)
+is_active = BooleanField(default=True)
 
 migrate(
     migrator.add_column(
-        'users',
-        'active_loans',
-        active_loans
+        'books',
+        'is_active',
+        is_active
     )
 )
