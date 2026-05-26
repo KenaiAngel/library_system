@@ -28,7 +28,6 @@ def get_books():
     )
     books= []
     for book in query:
-        print (f'{book.id}, {book.bookauthor.author.name}')
         current_book = {
             'id': book.id,
             'title': book.title,
