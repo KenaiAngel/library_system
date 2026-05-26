@@ -12,6 +12,8 @@ from security.jwt import create_access_token
 
 router = APIRouter(
     prefix="/auth",
+    tags=["auth"],
+
 )
 
 @router.post("/signup", status_code=status.HTTP_201_CREATED, response_model=TokenResponse)

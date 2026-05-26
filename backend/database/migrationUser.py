@@ -9,8 +9,8 @@ active_loans = IntegerField(null=True)
 
 migrate(
     migrator.add_column(
-        'users',      # nombre tabla
-        'active_loans',     # nombre columna
+        'users',
+        'active_loans',
         active_loans
     )
 )
