@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from database.models import database as connection, User
+from database.models import database as connection, User, Book, Author, Loan, BookAuthor
 from security import auth
 
 app = FastAPI(
@@ -15,7 +15,7 @@ def starup():
         connection.connect()
         print('Se conecto a la base de datos')
 
-    connection.create_tables([User])
+    connection.create_tables([User, Book, Author, Loan, BookAuthor])
 
 app.include_router(auth.router)
 
