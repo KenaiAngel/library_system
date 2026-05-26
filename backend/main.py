@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from database.models import database as connection, User, Book, Author, Loan, BookAuthor
 from security import auth
-from application import books
+from application import books, loans
 
 app = FastAPI(
     title="API de servicios bibliotecario",
@@ -20,6 +20,7 @@ def starup():
 
 app.include_router(auth.router)
 app.include_router(books.router)
+app.include_router(loans.router)
 
 
 
