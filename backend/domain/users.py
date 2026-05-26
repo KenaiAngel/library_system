@@ -1,0 +1,24 @@
+from database.models import User
+from models.user import UserRequest
+from security.encrypt import hash_password, verify_password
+from security.constants import ADMIN_ROLE
+
+def add_user(user:UserRequest):
+    hashed_password = hash_password(user.password)
+
+    new_user = User.create(
+        username=user.username,
+        email=user.email,
+        password = hashed_password,
+        role = ADMIN_ROLE
+    )
+    return new_user
+
+def authenticate_user(email:str, password:str):
+    user = User.get_or_none(User.email == email)
+    if not user:
+        return False
+    if not verify_password(password, user.password):
+        return False
+    return user
+

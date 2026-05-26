@@ -1,0 +1,14 @@
+# =========================
+# ENV FILES
+# =========================
+**/.env
+**/.env.local
+**/.env.development
+**/.env.production
+
+# =========================
+# PYTHON BACKEND
+# =========================
+backend/.venv/
+backend/__pycache__/
+backend/*.pyc
