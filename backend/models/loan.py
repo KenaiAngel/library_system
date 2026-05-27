@@ -17,7 +17,7 @@ class LoanRequest(BaseModel):
         if self.book_id <= 0:
             raise ValueError("Book id must be greater than 0")
 
-        if self.return_date <= self.lend_date:
+        if self.expected_return_date <= self.lend_date:
             raise ValueError(
                 "Return date must be greater than lend date"
             )
