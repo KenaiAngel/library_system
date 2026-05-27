@@ -10,7 +10,8 @@ def add_user(user:UserRequest):
         username=user.username,
         email=user.email,
         password = hashed_password,
-        role = READER_ROLE
+        role = READER_ROLE,
+        is_active = True
     )
     return new_user
 

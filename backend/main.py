@@ -7,7 +7,7 @@ app = FastAPI(
     title="API de servicios bibliotecario",
     description="API de servicios bibliotecario",
     summary="API de servicios bibliotecario",
-    version="1.0.0",
+    version="1.3.1",
 )
 
 @app.on_event("startup")
