@@ -26,16 +26,17 @@ async def signup(request: UserRequest):
             status_code=status.HTTP_409_CONFLICT,
             detail=new_user['detail']
         )
+    user_data = new_user['data']
     token = create_access_token(new_user['data'],timedelta(minutes=60))
 
     return TokenResponse(
         access_token=token,
         token_type="bearer",
         user=UserResponse(
-            id=new_user.id,
-            username=new_user.username,
-            email=new_user.email,
-            role=new_user.role
+            id=user_data.id,
+            username=user_data.username,
+            email=user_data.email,
+            role=user_data.role
         )
     )
 
@@ -50,6 +51,12 @@ async def login(form_data:Annotated[OAuth2PasswordRequestForm,Depends()]):
         )
 
     user = authenticate_user(email, form_data.password)
+    if not user:
+        raise HTTPException(
+            status_code=401,
+            detail="Credenciales incorrectas"
+        )
+
     token = create_access_token(user, timedelta(minutes=60))
     return TokenResponse(
         access_token=token,

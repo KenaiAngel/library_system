@@ -34,7 +34,21 @@ async def eliminar_prestamo(prestamo_id: int):
             st.success(f"Préstamo {prestamo_id} eliminado exitosamente")
 
         except httpx.HTTPStatusError as ex:
-            st.error(ex.response.text)
+            try:
+                code = ex.response.status_code
+                error_json = ex.response.json()
+
+                st.write(code)
+                st.write(error_json)
+
+                if code == 409:
+                    msg = error_json.get("detail")
+                else:
+                    detail = error_json.get("detail", [])
+                    msg = detail[0].get("msg")
+                st.error(msg)
+            except ValueError:
+                st.error("Error en el servidor")
 
         except httpx.RequestError:
             st.error("Error de conexión con el servidor")
@@ -47,7 +61,21 @@ async def actualizar_prestamo(prestamo_id: int):
             st.success(f"Préstamo {prestamo_id} actualizado exitosamente")
 
         except httpx.HTTPStatusError as ex:
-            st.error(ex.response.text)
+            try:
+                code = ex.response.status_code
+                error_json = ex.response.json()
+
+                st.write(code)
+                st.write(error_json)
+
+                if code == 409:
+                    msg = error_json.get("detail")
+                else:
+                    detail = error_json.get("detail", [])
+                    msg = detail[0].get("msg")
+                st.error(msg)
+            except ValueError:
+                st.error("Error en el servidor")
 
         except httpx.RequestError:
             st.error("Error de conexión con el servidor")
@@ -61,7 +89,18 @@ async def crear_préstamo(payload: dict):
             time.sleep(1)
 
         except httpx.HTTPStatusError as ex:
-            st.error(ex.response.text)
+            try:
+                code = ex.response.status_code
+                error_json = ex.response.json()
+
+                if code == 409:
+                    msg = error_json.get("detail")
+                else:
+                    detail = error_json.get("detail", [])
+                    msg = detail[0].get("msg")
+                st.error(msg)
+            except ValueError:
+                st.error("Error en el servidor")
 
         except httpx.RequestError:
             st.error("Error de conexión con el servidor")

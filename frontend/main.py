@@ -26,9 +26,9 @@ if st.session_state.token is None:
 
     with tab_login:
         with st.form("Login"):
-            st.subheader("Ingresa tus datos")
-            email_login = st.text_input("Correo Electrónico")
-            password_login = st.text_input("Contraseña", type="password")
+            st.header("Ingresa tus datos")
+            email_login = st.text_input("Correo Electrónico ('ejemplo'@'provedor'.com)")
+            password_login = st.text_input("Contraseña (6-24 caracteres)", type="password")
             submitted_login = st.form_submit_button("Iniciar Sesión")
 
         if submitted_login:
@@ -56,11 +56,19 @@ if st.session_state.token is None:
                         time.sleep(1)
                         st.rerun()
 
-
                     except httpx.HTTPStatusError as ex:
-                        st.error(ex.response)
-                        # Revisar Logica del Servidor
+                        try:
+                            code = ex.response.status_code
+                            error_json = ex.response.json()
 
+                            if code == 400 or code == 401:
+                                msg = error_json.get("detail")
+                            else:
+                                detail = error_json.get("detail", [])
+                                msg = detail[0].get("msg")
+                            st.error(msg)
+                        except ValueError:
+                            st.error("Error en el servidor")
                     except httpx.RequestError:
                         st.error("Error de conexión con el servidor")
 
@@ -69,8 +77,8 @@ if st.session_state.token is None:
             st.header("Ingresa tus datos")
 
             username_signup = st.text_input("Ingresa tu username", key="username_input")
-            email_signup = st.text_input("Ingresa tu email", key="email_input")
-            password_signup = st.text_input("Ingresa tu password", type="password", key="password_input")
+            email_signup = st.text_input("Ingresa tu email ('ejemplo'@'provedor'.com)", key="email_input")
+            password_signup = st.text_input("Ingresa tu password (6-24 caracteres)", type="password", key="password_input")
 
             submitted_signup = st.form_submit_button("Registrar Cuenta")
 
@@ -94,9 +102,18 @@ if st.session_state.token is None:
                         st.success("Usuario registrado, ya puedes iniciar sesión")
 
                     except httpx.HTTPStatusError as ex:
-                        st.error(ex.response)
-                        # Revisar Logica del Servidor
+                        try:
+                            code = ex.response.status_code
+                            error_json = ex.response.json()
 
+                            if code == 409:
+                                msg = error_json.get("detail")
+                            else:
+                                detail = error_json.get("detail", [])
+                                msg = detail[0].get("msg")
+                            st.error(msg)
+                        except ValueError:
+                            st.error("Error en el servidor")
                     except httpx.RequestError:
                         st.error("Error de conexión con el servidor")
 else:

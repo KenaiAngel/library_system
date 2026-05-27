@@ -34,8 +34,18 @@ async def eliminar_libro(libro_id: int):
             st.success(f"Libro {libro_id} eliminado exitosamente")
 
         except httpx.HTTPStatusError as ex:
-            st.error(ex.response.text)
+            try:
+                code = ex.response.status_code
+                error_json = ex.response.json()
 
+                if code == 409:
+                    msg = error_json.get("detail")
+                else:
+                    detail = error_json.get("detail", [])
+                    msg = detail[0].get("msg")
+                st.error(msg)
+            except ValueError:
+                st.error("Error en el servidor")
         except httpx.RequestError:
             st.error("Error de conexión con el servidor")
 
@@ -48,7 +58,17 @@ async def crear_libro(payload: dict):
             time.sleep(1)
 
         except httpx.HTTPStatusError as ex:
-            st.error(ex.response.text)
+            code = ex.response.status_code
+            error_json = ex.response.json()
+
+            if code == 400:
+                msg = error_json.get("detail")
+            else:
+                detail = error_json.get("detail", [])
+                msg = detail[0].get("msg")
+            st.error(msg)
+        except ValueError:
+            st.error("Error en el servidor")
 
         except httpx.RequestError:
             st.error("Error de conexión con el servidor")
