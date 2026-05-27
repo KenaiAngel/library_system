@@ -62,3 +62,4 @@ def delete_book(book_id):
         return {'status':False,'detail':'Book not found'}
     book.is_active = False
     book.save(only=[Book.is_active])
+    return {'status':True}
