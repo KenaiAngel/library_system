@@ -44,7 +44,7 @@ def add_new_loan(loan:LoanRequest):
         }
 
     }
-    return final_loan
+    return {'status':True, 'data':final_loan}
 
 def extend_loan(loan_id:int,user_id:int | None = None):
     loan = {}

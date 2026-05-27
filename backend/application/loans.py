@@ -35,7 +35,14 @@ async def create_loan(loan:LoanRequest, user: user_dependency):
             detail="Forbidden",
         )
     action = add_new_loan(loan)
-    return action
+
+    if not action['status']:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=action['detail'],
+        )
+
+    return action['data']
 
 @router.put("/{loan_id}",status_code=status.HTTP_202_ACCEPTED)
 async def edit_loan(loan_id:int ,user: user_dependency):
@@ -67,7 +74,12 @@ async def delete_loan(loan_id:int ,user: user_dependency):
             detail="Forbidden",
         )
     loan = end_loan(loan_id)
-    print(loan)
+    if not loan['status']:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=loan['detail'],
+        )
+    return loan['data']
 
 
 
