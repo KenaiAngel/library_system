@@ -23,7 +23,28 @@ def add_new_loan(loan:LoanRequest):
         expected_return_date=loan.expected_return_date,
         is_active=True,
     )
-    return new_loan
+
+    final_loan = {
+        'id': new_loan.id,
+        'lend_date': new_loan.lend_date,
+        'expected_return_date': new_loan.expected_return_date,
+        'is_active': new_loan.is_active,
+        'book': {
+            'id': new_loan.book.id,
+            'title': new_loan.book.title,
+            'description': new_loan.book.description,
+            'total_stock': new_loan.book.total_stock,
+            'available_stock': new_loan.book.available_stock,
+
+        },
+        'user': {
+            'id': new_loan.user.id,
+            'username': new_loan.user.username,
+            'email': new_loan.user.email,
+        }
+
+    }
+    return final_loan
 
 def extend_loan(loan_id:int,user_id:int | None = None):
     loan = {}
