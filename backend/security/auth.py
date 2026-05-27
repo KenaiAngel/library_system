@@ -1,14 +1,16 @@
 from typing import Annotated
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from fastapi.params import Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from starlette import status
 from datetime import timedelta
+from pydantic import EmailStr, ValidationError,TypeAdapter
 
 from models.user import UserRequest, UserResponse, TokenResponse
 from domain.users import add_user, authenticate_user
 from security.jwt import create_access_token
 
+email_adapter = TypeAdapter(EmailStr)
 
 router = APIRouter(
     prefix="/auth",
@@ -34,7 +36,15 @@ async def signup(request: UserRequest):
 
 @router.post("/login", status_code=status.HTTP_200_OK, response_model=TokenResponse)
 async def login(form_data:Annotated[OAuth2PasswordRequestForm,Depends()]):
-    user = authenticate_user(form_data.username, form_data.password)
+    try:
+        email = email_adapter.validate_python(form_data.username)
+    except ValidationError:
+        raise HTTPException(
+            status_code=400,
+            detail="Email inválido"
+        )
+
+    user = authenticate_user(email, form_data.password)
     token = create_access_token(user, timedelta(minutes=60))
     return TokenResponse(
         access_token=token,
