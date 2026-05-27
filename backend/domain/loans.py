@@ -9,12 +9,15 @@ def add_new_loan(loan:LoanRequest):
     if book.available_stock == 0:
         return {'status':False, 'detail':'No available stock'}
 
-    user = User.get_by_id(loan.user_id)
+    user = User.get_or_none(loan.user_id)
     if user is None:
         return {'status': False, 'detail': 'User not found'}
 
     book.available_stock -= 1
     book.save(only=[Book.available_stock])
+
+    user.active_loans += 1
+    user.save(only=[User.active_loans])
 
     new_loan = Loan.create(
         book = book,
@@ -54,15 +57,40 @@ def extend_loan(loan_id:int,user_id:int | None = None):
         loan = Loan.get_or_none((Loan.id == loan_id) & (Loan.user_id == user_id))
     if loan is None:
         return {'status':False, 'detail':'Loan not found'}
+
+    if not loan.is_active:
+        return {'status':False, 'detail':'Loan not active'}
+
     loan.expected_return_date += timedelta(days=10)
     loan.save(only=[Loan.expected_return_date])
-    return {'status':True,'data':loan}
+    response = {
+        'id': loan.id,
+        'lend_date': loan.lend_date,
+        'expected_return_date': loan.expected_return_date,
+        'penalty': loan.penalty,
+        'is_active': loan.is_active,
+        'user':{
+            'id': loan.user.id,
+            'username': loan.user.username,
+            'email': loan.user.email,
+        },
+        'book': {
+            'id': loan.book.id,
+            'title': loan.book.title,
+            'description': loan.book.description,
+
+        }
+    }
+    return {'status':True,'data':response}
 
 def end_loan(loan_id:int):
     loan = Loan.get_or_none(Loan.id == loan_id)
     if loan is None:
         return {'status':False, 'detail':'Loan not found'}
     book = Book.get_or_none(Book.id == loan.book_id)
+
+    if not loan.is_active:
+        return {'status':False, 'detail':'Loan not active'}
 
     if book is None:
         return {'status':False, 'detail':'Book not found'}

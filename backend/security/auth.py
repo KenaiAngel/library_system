@@ -21,7 +21,12 @@ router = APIRouter(
 @router.post("/signup", status_code=status.HTTP_201_CREATED, response_model=TokenResponse)
 async def signup(request: UserRequest):
     new_user = add_user(request)
-    token = create_access_token(new_user,timedelta(minutes=60))
+    if not new_user['status']:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=new_user['detail']
+        )
+    token = create_access_token(new_user['data'],timedelta(minutes=60))
 
     return TokenResponse(
         access_token=token,
