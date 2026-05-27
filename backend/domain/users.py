@@ -1,7 +1,7 @@
 from database.models import User
 from models.user import UserRequest
 from security.encrypt import hash_password, verify_password
-from security.constants import ADMIN_ROLE
+from security.constants import ADMIN_ROLE, READER_ROLE
 
 def add_user(user:UserRequest):
     hashed_password = hash_password(user.password)
@@ -10,7 +10,7 @@ def add_user(user:UserRequest):
         username=user.username,
         email=user.email,
         password = hashed_password,
-        role = ADMIN_ROLE
+        role = READER_ROLE
     )
     return new_user
 

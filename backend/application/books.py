@@ -20,7 +20,12 @@ async def create_book(book: BookRequest, user:user_dependency):
         )
     book = add_book(book)
 
-    return book
+    if not book['status']:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail = book['detail'],
+        )
+    return book['data']
 
 @router.get("",status_code=status.HTTP_200_OK)
 async def obtain_books():
@@ -33,7 +38,12 @@ async def remove_book(book_id:int, user:user_dependency):
             status_code=status.HTTP_403_FORBIDDEN,
             detail = 'Forbidden',
         )
-    delete_book(book_id)
+    book = delete_book(book_id)
+    if not book['status']:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail = book['detail'],
+        )
     return
 
 
