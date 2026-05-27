@@ -15,7 +15,8 @@ def add_user(user:UserRequest):
         email=user.email,
         password = hashed_password,
         role = READER_ROLE,
-        is_active = True
+        active_loans = 0,
+
     )
     return {'status':True, 'data': new_user}
 
