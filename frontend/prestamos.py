@@ -37,11 +37,7 @@ async def eliminar_prestamo(prestamo_id: int):
             try:
                 code = ex.response.status_code
                 error_json = ex.response.json()
-
-                st.write(code)
-                st.write(error_json)
-
-                if code == 409:
+                if code == 404:
                     msg = error_json.get("detail")
                 else:
                     detail = error_json.get("detail", [])
@@ -65,10 +61,7 @@ async def actualizar_prestamo(prestamo_id: int):
                 code = ex.response.status_code
                 error_json = ex.response.json()
 
-                st.write(code)
-                st.write(error_json)
-
-                if code == 409:
+                if code == 404:
                     msg = error_json.get("detail")
                 else:
                     detail = error_json.get("detail", [])
@@ -93,7 +86,7 @@ async def crear_préstamo(payload: dict):
                 code = ex.response.status_code
                 error_json = ex.response.json()
 
-                if code == 409:
+                if code == 404:
                     msg = error_json.get("detail")
                 else:
                     detail = error_json.get("detail", [])
